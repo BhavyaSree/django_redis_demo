@@ -1,10 +1,21 @@
+# Simple Django application with Redis backend
+
 Our Application is designed as two components.
 
 Components:
 1. Redis Database
 2. Django Application
 
-Deploy both the components in two different namespaces(`db-ns`, `app-ns`) for better RBAC.
+Frontend application is designed to be stateless. This should allow us to use [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) for efficent scalling. 
+
+Backend DB (Redis) is deployed in master-slave mode using [Bitnami's Redis helm chart](https://github.com/helm/charts/tree/master/stable/redis). This should give us an highly available(HA) Redis DB cluster.
+
+Each component will be deployed in its own namespaces(`db-ns`, `app-ns`) for better RBAC. So two teams can work with simplified RBAC. To reduce the surface area of attacks, we will use limited privilages and service accounts.
+
+
+---
+
+![Application Screen Shot](AppScreenShot.png)
 
 ---
 ## Redis Database
@@ -81,6 +92,8 @@ kubectl delete ns app-ns db-ns
 
 # Running on minikube
 
+This App is developed and tested on minikube environment.
+
 Tools needed
 
 * Virtual box or equivelent
@@ -88,8 +101,8 @@ Tools needed
 * kubectl
 * helm
 
+This application can be deployed on a clean slate by running the below command. This takes care of (minikube) cluster provisoning to cleaning up the compute resources once completed.
 ```
-export REDIS_PASSWORD=secretpassword
-./deploy-to-minikube.sh
+export REDIS_PASSWORD=secretpassword && ./deploy-to-minikube.sh
 ```
 
