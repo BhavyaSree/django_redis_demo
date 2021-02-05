@@ -6,6 +6,7 @@ Components:
 1. Redis Database
 2. Django Application
 
+![Namespace](namespace.png)
 Frontend application is designed to be stateless. This should allow us to use [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) for efficent scalling. 
 
 Backend DB (Redis) is deployed in master-slave mode using [Bitnami's Redis helm chart](https://github.com/helm/charts/tree/master/stable/redis). This should give us an highly available(HA) Redis DB cluster.
@@ -35,6 +36,7 @@ helm install my-redis bitnami/redis --set password=secretpassword -n db-ns
 ---
 ## Django Application
 
+![Frontend componenets](frondend-app.png)
 *  Create a namespace for Redis pods
 ```
 kubectl create ns app-ns
