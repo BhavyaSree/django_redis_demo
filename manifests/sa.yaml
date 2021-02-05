@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: myapp-sa
+  namespace: app-ns
+secrets:
+- name: myapp-sa-token-z4rkv
