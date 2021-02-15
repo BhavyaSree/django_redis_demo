@@ -13,7 +13,7 @@ kubectl create namespace db-ns
 helm install my-redis bitnami/redis --set password=$REDIS_PASSWORD --namespace db-ns
 
 echo "Deploying Redis cluster using Helm chart..."
-sleep 5
+sleep 70
 
 # Deploy django application
 kubectl create namespace app-ns
@@ -21,7 +21,7 @@ kubectl create serviceaccount --namespace app-ns myapp-sa
 
 kubectl create secret generic my-redis --namespace  app-ns --from-literal=redis-password=`kubectl get secret/my-redis -n db-ns -ojsonpath='{.data.redis-password}' | base64 -D`
 kubectl create deploy myapp --image=bhavyabindela/testapp --namespace app-ns --replicas=2 --port=8000
-sleep 10
+sleep 15
 
 kubectl set serviceaccount deployment myapp --namespace app-ns myapp-sa
 echo "TO-DO: Reduce the permissions of service account"
@@ -41,17 +41,18 @@ sleep 10
 
 echo "Exposing the service and do port-forward"
 kubectl expose deployment/myapp --namespace app-ns --port=8000 --name=myapp
-open http://localhost:8000/test_view
+sleep 10
 echo "Open in browser http://localhost:8000/test_view"
-echo "Press Ctrl + C to terminate"
-kubectl port-forward svc/myapp -napp-ns 8000:8000
+open http://localhost:8000/test_view
 
+kubectl port-forward svc/myapp -napp-ns 8000:8000
+echo "Press Ctrl + C to terminate"
 
 echo "Press any key to do cleanup"
 read -n1 z
 
 echo 'Cleaning up...'
-kubectl delete namespace app-ns db-ns
+kubectl delete namespace app-ns db-ns --force
 # kubectl delete pvc/redis-data-my-redis-{master-0,slave-0,slave-1}
 # minikube stop
 # helm repo remove bitnami
